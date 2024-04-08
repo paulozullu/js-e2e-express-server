@@ -4,8 +4,8 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 pr:
-  - main
-  - releases/*
+- main
+- releases/*
 
 pool:
   vmImage: ubuntu-latest
