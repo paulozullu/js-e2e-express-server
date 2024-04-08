@@ -22,9 +22,15 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- task: PublishCodeCoverageResults@1
+# - task: PublishCodeCoverageResults@1
+#   inputs:
+#     codeCoverageTool: "JaCoCo"
+#     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
+#     reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
+#     failIfCoverageEmpty: true
+    
+- task: PublishCodeCoverageResults@2
   inputs:
-    codeCoverageTool: "JaCoCo"
     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
-    reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
+    #pathToSources: # string. Path to Source files. 
     failIfCoverageEmpty: true
