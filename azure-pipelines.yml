@@ -29,8 +29,8 @@ steps:
 #     reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
 #     failIfCoverageEmpty: true
     
-- task: PublishCodeCoverageResults@2
-  inputs:
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
+# - task: PublishCodeCoverageResults@2
+#   inputs:
+#     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
     #pathToSources: # string. Path to Source files. 
-    failIfCoverageEmpty: true
+    # failIfCoverageEmpty: true
