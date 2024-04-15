@@ -9,40 +9,59 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+jobs:
+- job: Job1
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - script: |
+      npm install
+      npm run build
+    displayName: 'npm install and build'
 
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: |
-       src/*
-       public/*
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy project files'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: |
+        src/*
+        public/*
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy project files'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    artifactName: e2e-server
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-    publishLocation: 'pipeline'
-  displayName: 'Publish npm artifact'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      artifactName: e2e-server
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      publishLocation: 'pipeline'
+    displayName: 'Publish npm artifact'
 
-# - task: PublishCodeCoverageResults@1
-#   inputs:
-#     codeCoverageTool: "JaCoCo"
-#     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
-#     reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
-#     failIfCoverageEmpty: true
-    
-- task: PublishCodeCoverageResults@2
-  inputs: 
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+  # - task: PublishCodeCoverageResults@1
+  #   inputs:
+  #     codeCoverageTool: "JaCoCo"
+  #     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
+  #     reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
+  #     failIfCoverageEmpty: true
+      
+  - task: PublishCodeCoverageResults@2
+    inputs: 
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+  
+- deployment: VMDeploy
+  displayName: Deploy to VM
+  environment: 
+    name: VMenv
+    resourceType: virtualMachine
+    # resourceName: USHAN-PC # only deploy to the VM resource named USHAN-PC
+    tags: pdi
+  strategy:
+    runOnce:
+      deploy:   
+          steps:
+          - script: |
+              npm install
+              npm run build
+              npm start
+            displayName: 'npm install, build and start'
